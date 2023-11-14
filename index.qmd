@@ -1,0 +1,96 @@
+---
+format:
+    revealjs: 
+        theme: night
+---
+
+# parallelooza
+
+parallel computing approaches in R and Python
+
+## agenda
+
+- the problem
+- solutions
+
+# the problem
+
+gottagofast.png
+
+## how to accelerate code
+
+- make it faster
+- add cores
+- add machines
+
+## make it faster
+
+figure out why it is slow WITH DATA (profvis, microbenchmark)
+optimize
+RIIR
+
+## add cores
+
+- make your package smarter about the cores it has access to
+  - https://github.com/eddelbuettel/rcppsimdjson
+- use a framework that can spread work across cores
+
+
+## add machines
+
+- use a framework that can spread work across machins
+
+## "scheduler"
+
+software that matches tasks to available resources
+
+::: columns
+
+::: column
+
+### orchestrators
+
+- kubernetes
+- nomad
+
+### other
+
+- apache spark
+
+:::
+
+::: column
+
+### hpc
+
+- slurm 🍊
+- condor 🍊
+- pbs
+- grid engine
+
+:::
+
+:::
+
+## hpc
+
+```{mermaid}
+graph LR;
+A(/apps)
+L(login node)
+M(Resource Manager)
+S(Shared Storage)
+H(/home)
+
+L -->|Submit| M;
+M --> C(Compute Node)
+M --> D(Compute Node)
+M --> E(Compute Node)
+S --- L
+S --- M
+S --- C
+S --- D
+S --- E
+A --- S
+H --- S
+```
