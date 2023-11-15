@@ -60,24 +60,27 @@ a survey of parallel computing approaches
 - handles tricky parallelization problems
 - supplies primitives for re-use in higher-level pacakges
 
-## [purrr](https://rstats-wtf.github.io/wtf-purrr-slides/) 
+## [`purrr::`](https://rstats-wtf.github.io/wtf-purrr-slides/) 
 
 ::: r-fit-text
-`purrr::map(.x, .f, ...)`
+`map(.x, .f, ... )`
 :::
 
-for every element of `.x` do `.f`
+for every element of `.x`,  
+do `.f`
 
 
-## [~~p~~furrr](https://furrr.futureverse.org/)
+## [~~p~~`furrr::`](https://furrr.futureverse.org/)
 
 ::: r-fit-text
-`purrr::map(.x, .f, ...)`
+`future_map(.x, .f, ...)`
 :::
 
-for every element of `.x` do `.f`,  
+for every element of `.x`,  
+do `.f`,    
 according to the `plan()`
 
+## demo
 
 # add machines {background-color="white"}
 
