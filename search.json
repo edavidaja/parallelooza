@@ -1,0 +1,107 @@
+[
+  {
+    "objectID": "index.html#about-me",
+    "href": "index.html#about-me",
+    "title": "",
+    "section": "about me",
+    "text": "about me\n\nsolutions engineer at Posit, PBC\nretired policy wonk\nnot an HPC expert"
+  },
+  {
+    "objectID": "index.html#this-talk-is-a-map",
+    "href": "index.html#this-talk-is-a-map",
+    "title": "",
+    "section": "this talk is a map",
+    "text": "this talk is a map\n\nslides, example code github.com/edavidaja/parallelooza\nHPC + cloud development environnments aws parallelcluster + posit workbench"
+  },
+  {
+    "objectID": "index.html#how-to-accelerate-code",
+    "href": "index.html#how-to-accelerate-code",
+    "title": "",
+    "section": "how to accelerate code",
+    "text": "how to accelerate code\n\nmake it faster\nadd cores\nadd machines"
+  },
+  {
+    "objectID": "index.html#make-it-faster",
+    "href": "index.html#make-it-faster",
+    "title": "",
+    "section": "make it faster",
+    "text": "make it faster\n\nfigure out why it is slow WITH DATA:\n\nprofvis\nbench & alternatives\n\nRIIR\n\nextendr\nr-rust\n\nSIMD\n\nrcppsimdjson"
+  },
+  {
+    "objectID": "index.html#futureverse",
+    "href": "index.html#futureverse",
+    "title": "",
+    "section": "futureverse",
+    "text": "futureverse\n{future} overview\n\nhandles tricky parallelization problems\nsupplies primitives for re-use in higher-level pacakges"
+  },
+  {
+    "objectID": "index.html#purrr",
+    "href": "index.html#purrr",
+    "title": "",
+    "section": "purrr",
+    "text": "purrr\n\npurrr::map(.x, .f, ...)\n\nfor every element of .x do .f"
+  },
+  {
+    "objectID": "index.html#pfurrr",
+    "href": "index.html#pfurrr",
+    "title": "",
+    "section": "pfurrr",
+    "text": "pfurrr\n\npurrr::map(.x, .f, ...)\n\nfor every element of .x do .f,\naccording to the plan()"
+  },
+  {
+    "objectID": "index.html#scheduler",
+    "href": "index.html#scheduler",
+    "title": "",
+    "section": "“scheduler”:",
+    "text": "“scheduler”:\nsoftware that matches tasks to available resources:\n\n\norchestrators\n\nkubernetes\nnomad\n\n(not a scheduler)\n\napache spark\n\n\nhpc\n\nslurm 🍊\ncondor 🍊\npbs\ngrid engine"
+  },
+  {
+    "objectID": "index.html#hpc-1",
+    "href": "index.html#hpc-1",
+    "title": "",
+    "section": "hpc",
+    "text": "hpc\n\n\n\n\ngraph LR;\nA(/apps)\nL(login node)\nM(Resource Manager)\nS(Shared Storage)\nH(/home)\n\nL --&gt;|Submit| M;\nM --&gt; C(Compute Node)\nM --&gt; D(Compute Node)\nM --&gt; E(Compute Node)\nS --- L\nS --- M\nS --- C\nS --- D\nS --- E\nA --- S\nH --- S"
+  },
+  {
+    "objectID": "index.html#templates",
+    "href": "index.html#templates",
+    "title": "",
+    "section": "templates",
+    "text": "templates\n#!/bin/bash -l\n\n# File: slurm.tmpl\n# Template for using clustermq against a SLURM backend\n\n#SBATCH --job-name={{ job_name }}\n#SBATCH --error={{ log_file | /dev/null }}\n#SBATCH --mem-per-cpu={{ memory | 1024 }}\n#SBATCH --array=1-{{ n_jobs }}\n#SBATCH --cpus-per-task={{ cores | 1 }}\n\n\nexport OMP_NUM_THREADS={{ cores | 1 }}\nCMQ_AUTH={{ auth }} ${R_HOME}/bin/R --no-save --no-restore -e 'clustermq:::worker(\"{{ master }}\")'"
+  },
+  {
+    "objectID": "index.html#future.batchtools",
+    "href": "index.html#future.batchtools",
+    "title": "",
+    "section": "future.batchtools",
+    "text": "future.batchtools\nlibrary(future.batchtools)\nlibrary(furrr)\n\nplan(\n  list(\n    tweak(batchtools_slurm, resources = list(\"memory\" = 1024)),\n    multisession\n    )\n  )\n\ncompute &lt;- function(n) {\n\n  library(palmerpenguins)\n\n  # Our dataset\n  x &lt;- as.data.frame(penguins[c(4, 1)])\n\n  ind &lt;- sample(344, 344, replace = TRUE)\n  result1 &lt;-\n    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))\n  coefficients(result1)\n}\n\n\nfuture_map(rep(1, times = 2), ~ compute(.x))"
+  },
+  {
+    "objectID": "index.html#clustermq",
+    "href": "index.html#clustermq",
+    "title": "",
+    "section": "clustermq",
+    "text": "clustermq\noptions(\n  clustermq.scheduler = \"slurm\",\n  clustermq.template = \"clustermq.slurm.tmpl\"\n)\n\nlibrary(clustermq)\n\ncompute &lt;- function(n) {\n\n  library(palmerpenguins)\n\n  # Our dataset\n  x &lt;- as.data.frame(penguins[c(4, 1)])\n\n  ind &lt;- sample(344, 344, replace = TRUE)\n  result1 &lt;-\n    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))\n  coefficients(result1)\n}\n\nres &lt;- Q(compute, n = 1:1000, n_jobs = 1)"
+  },
+  {
+    "objectID": "index.html#crew.cluster",
+    "href": "index.html#crew.cluster",
+    "title": "",
+    "section": "crew.cluster",
+    "text": "crew.cluster\nlibrary(crew.cluster)\n\ncontroller &lt;- crew_controller_slurm(\n  host = Sys.info()[\"nodename\"],\n  name = \"crew\",\n  workers = 2,\n  slurm_cpus_per_task = 1,\n  slurm_memory_gigabytes_per_cpu = 1024\n  )\n\ncompute &lt;- function(n) {\n\n  library(palmerpenguins)\n\n  # Our dataset\n  x &lt;- as.data.frame(penguins[c(4, 1)])\n\n  ind &lt;- sample(344, 344, replace = TRUE)\n  result1 &lt;-\n    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))\n  coefficients(result1)\n}\n\ncontroller$start()\ncontroller$push(name = \"fit model\", command = compute())\ncontroller$pop()\ncontroller$terminate()"
+  },
+  {
+    "objectID": "index.html#dask-jobqueue",
+    "href": "index.html#dask-jobqueue",
+    "title": "",
+    "section": "dask-jobqueue",
+    "text": "dask-jobqueue\nhttps://docs.dask.org/en/stable/deploying-hpc.html"
+  },
+  {
+    "objectID": "index.html#ray",
+    "href": "index.html#ray",
+    "title": "",
+    "section": "ray",
+    "text": "ray\n🚧 https://docs.ray.io/en/latest/cluster/vms/user-guides/community/slurm.html"
+  }
+]
