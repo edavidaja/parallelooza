@@ -1,0 +1,14 @@
+#!/bin/bash -l
+
+# File: slurm.tmpl
+# Template for using clustermq against a SLURM backend
+
+#SBATCH --job-name={{ job_name }}
+#SBATCH --error={{ log_file | /dev/null }}
+#SBATCH --mem-per-cpu={{ memory | 1024 }}
+#SBATCH --array=1-{{ n_jobs }}
+#SBATCH --cpus-per-task={{ cores | 1 }}
+
+
+export OMP_NUM_THREADS={{ cores | 1 }}
+CMQ_AUTH={{ auth }} ${R_HOME}/bin/R --no-save --no-restore -e 'clustermq:::worker("{{ master }}")'

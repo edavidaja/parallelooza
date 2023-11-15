@@ -1,9 +1,12 @@
-options(
-  clustermq.scheduler = "slurm",
-  clustermq.template = "clustermq.slurm.tmpl"
-)
+library(future.batchtools)
+library(furrr)
 
-library(clustermq)
+plan(
+  list(
+    tweak(batchtools_slurm, resources = list("memory" = 1024)),
+    multisession
+    )
+  )
 
 compute <- function(n) {
 
@@ -18,4 +21,5 @@ compute <- function(n) {
   coefficients(result1)
 }
 
-res <- Q(compute, n=1:1000, n_jobs=1)
+
+future_map(rep(1, times = 2), ~ compute(.x))
