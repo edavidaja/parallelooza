@@ -4,18 +4,20 @@ format:
         theme: night
 ---
 
-# parallelooza {background-image="https://tenor.com/view/spider-man-pointing-meme-double-identity-youre-fake-phony-gif-25729080"}
+# parallelooza
 
 a survey of parallel computing approaches
 
-## agenda
+## [about me](https://edavidaja.com)
 
-- the problem
-- solutions
+- solutions engineer at [Posit, PBC](https://posit.co/)
+- retired policy wonk
+- not an HPC expert
 
-# the problem
+## this talk is a map
 
-gottagofast.png
+- slides, example code [github.com/edavidaja/parallelooza](https://github.com/edavidaja/parallelooza)
+- HPC + cloud development environnments [aws parallelcluster + posit workbench](https://github.com/sol-eng/aws-parallelcluster-rsw)
 
 ## how to accelerate code
 
@@ -34,32 +36,66 @@ gottagofast.png
 - SIMD
   - [rcppsimdjson](https://github.com/eddelbuettel/rcppsimdjson)
 
-# add cores
+# add cores {background-color="white"}
 
 ::: {.columns}
 
 ::: {.column}
 
-![](https://www.futureverse.org/images/logo.png)
+![](https://www.futureverse.org/images/logo.png){width="200"}
 
 :::
 
 ::: {.column}
 
-- cuda
-- openCL
+![](https://assets.nvidiagrid.net/ngc/logos/Cuda.png)
 
 :::
 :::
 
+## futureverse
+
+[{future} overview](https://www.futureverse.org/packages-overview.html)
+
+- handles tricky parallelization problems
+- supplies primitives for re-use in higher-level pacakges
+
+## [purrr](https://rstats-wtf.github.io/wtf-purrr-slides/) 
+
+::: r-fit-text
+`purrr::map(.x, .f, ...)`
+:::
+
+for every element of `.x` do `.f`
 
 
-# add machines
+## [~~p~~furrr](https://furrr.futureverse.org/)
+
+::: r-fit-text
+`purrr::map(.x, .f, ...)`
+:::
+
+for every element of `.x` do `.f`,  
+according to the `plan()`
 
 
-## frameworks:
+# add machines {background-color="white"}
 
-software that matches tasks to available resources
+::: {.columns}
+::: {.column}
+![](https://slurm.schedmd.com/slurm_logo.png)
+
+:::
+::: {.column}
+![](https://kubernetes.io/images/nav_logo2.svg)
+![](https://htcondor.org/logos/htcondor_logos/PNG/HTCondor_red_blk_notag.png)
+:::
+:::
+
+
+## "scheduler":
+
+software that matches tasks to available resources:
 
 ::: columns
 
@@ -70,7 +106,7 @@ software that matches tasks to available resources
 - kubernetes
 - nomad
 
-### other
+### (not a scheduler)
 
 - apache spark
 
@@ -116,3 +152,34 @@ H --- S
 
 ```{.bash include="R/clustermq.slurm.tmpl"}
 ```
+
+## [`future.batchtools`](https://future.batchtools.futureverse.org/index.html)
+
+```{.r include="R/future.batchtools.R"}
+```
+
+## [`clustermq`](https://mschubert.github.io/clustermq/)
+
+```{.r include="R/clustermq.R"}
+```
+
+## [`crew.cluster`](https://wlandau.github.io/crew.cluster/)
+
+```{.r include="R/crew.cluster.R"}
+```
+
+# python
+
+## `dask-jobqueue`
+
+https://docs.dask.org/en/stable/deploying-hpc.html
+
+## `ray`
+
+🚧 https://docs.ray.io/en/latest/cluster/vms/user-guides/community/slurm.html
+
+
+# questions? feedback?
+
+`david@posit.co`
+
