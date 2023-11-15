@@ -18,4 +18,4 @@ compute <- function(n) {
   coefficients(result1)
 }
 
-res <- Q(compute, n=1:1000, n_jobs=1)
+res <- Q(compute, n = 1:1000, n_jobs = 1)

@@ -1,2 +1,4 @@
 project:
   type: website
+filters:
+  - include-code-files
