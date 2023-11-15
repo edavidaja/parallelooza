@@ -460,19 +460,24 @@
 </ul>
 </section>
 <section id="purrr" class="slide level2">
-<h2><a href="https://rstats-wtf.github.io/wtf-purrr-slides/">purrr</a></h2>
+<h2><a href="https://rstats-wtf.github.io/wtf-purrr-slides/"><code>purrr::</code></a></h2>
 <div class="r-fit-text">
-<p><code>purrr::map(.x, .f, ...)</code></p>
+<p><code>map(.x, .f, ... )</code></p>
 </div>
-<p>for every element of <code>.x</code> do <code>.f</code></p>
+<p>for every element of <code>.x</code>,<br>
+do <code>.f</code></p>
 </section>
 <section id="pfurrr" class="slide level2">
-<h2><a href="https://furrr.futureverse.org/"><del>p</del>furrr</a></h2>
+<h2><a href="https://furrr.futureverse.org/"><del>p</del><code>furrr::</code></a></h2>
 <div class="r-fit-text">
-<p><code>purrr::map(.x, .f, ...)</code></p>
+<p><code>future_map(.x, .f, ...)</code></p>
 </div>
-<p>for every element of <code>.x</code> do <code>.f</code>,<br>
+<p>for every element of <code>.x</code>,<br>
+do <code>.f</code>,<br>
 according to the <code>plan()</code></p>
+</section>
+<section id="demo" class="slide level2">
+<h2>demo</h2>
 </section></section>
 <section>
 <section id="add-machines" class="title-slide slide level1 center" data-background-color="white">
@@ -564,7 +569,7 @@ H --- S
 <span id="cb2-3"><a href="#cb2-3"></a></span>
 <span id="cb2-4"><a href="#cb2-4"></a><span class="fu">plan</span>(</span>
 <span id="cb2-5"><a href="#cb2-5"></a>  <span class="fu">list</span>(</span>
-<span id="cb2-6"><a href="#cb2-6"></a>    <span class="fu">tweak</span>(batchtools_slurm, <span class="at">resources =</span> <span class="fu">list</span>(<span class="st">"memory"</span> <span class="ot">=</span> <span class="dv">1024</span>)),</span>
+<span id="cb2-6"><a href="#cb2-6"></a>    batchtools_slurm,</span>
 <span id="cb2-7"><a href="#cb2-7"></a>    multisession</span>
 <span id="cb2-8"><a href="#cb2-8"></a>    )</span>
 <span id="cb2-9"><a href="#cb2-9"></a>  )</span>
@@ -572,18 +577,19 @@ H --- S
 <span id="cb2-11"><a href="#cb2-11"></a>compute <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
 <span id="cb2-12"><a href="#cb2-12"></a></span>
 <span id="cb2-13"><a href="#cb2-13"></a>  <span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb2-14"><a href="#cb2-14"></a></span>
-<span id="cb2-15"><a href="#cb2-15"></a>  <span class="co"># Our dataset</span></span>
-<span id="cb2-16"><a href="#cb2-16"></a>  x <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(penguins[<span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>)])</span>
-<span id="cb2-17"><a href="#cb2-17"></a></span>
-<span id="cb2-18"><a href="#cb2-18"></a>  ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">344</span>, <span class="dv">344</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-19"><a href="#cb2-19"></a>  result1 <span class="ot">&lt;-</span></span>
-<span id="cb2-20"><a href="#cb2-20"></a>    <span class="fu">glm</span>(x[ind, <span class="dv">2</span>] <span class="sc">~</span> x[ind, <span class="dv">1</span>], <span class="at">family =</span> <span class="fu">binomial</span>(logit))</span>
-<span id="cb2-21"><a href="#cb2-21"></a>  <span class="fu">coefficients</span>(result1)</span>
-<span id="cb2-22"><a href="#cb2-22"></a>}</span>
-<span id="cb2-23"><a href="#cb2-23"></a></span>
+<span id="cb2-14"><a href="#cb2-14"></a>  pid <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"PID: "</span>, <span class="fu">Sys.getpid</span>())</span>
+<span id="cb2-15"><a href="#cb2-15"></a>  host <span class="ot">&lt;-</span> <span class="fu">Sys.info</span>()[[<span class="st">"nodename"</span>]]</span>
+<span id="cb2-16"><a href="#cb2-16"></a>  <span class="co"># Our dataset</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a>  x <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(penguins[<span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>)])</span>
+<span id="cb2-18"><a href="#cb2-18"></a></span>
+<span id="cb2-19"><a href="#cb2-19"></a>  ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">344</span>, <span class="dv">344</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-20"><a href="#cb2-20"></a>  result1 <span class="ot">&lt;-</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a>    <span class="fu">glm</span>(x[ind, <span class="dv">2</span>] <span class="sc">~</span> x[ind, <span class="dv">1</span>], <span class="at">family =</span> <span class="fu">binomial</span>(logit))</span>
+<span id="cb2-22"><a href="#cb2-22"></a>  <span class="fu">list</span>(<span class="fu">coefficients</span>(result1), <span class="at">pid =</span> pid, <span class="at">hostname =</span> host)</span>
+<span id="cb2-23"><a href="#cb2-23"></a>}</span>
 <span id="cb2-24"><a href="#cb2-24"></a></span>
-<span id="cb2-25"><a href="#cb2-25"></a><span class="fu">future_map</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="at">times =</span> <span class="dv">2</span>), <span class="sc">~</span> <span class="fu">compute</span>(.x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-25"><a href="#cb2-25"></a></span>
+<span id="cb2-26"><a href="#cb2-26"></a><span class="fu">future_map</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="at">times =</span> <span class="dv">3</span>), <span class="sc">~</span> <span class="fu">compute</span>(.x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="clustermq" class="slide level2">
 <h2><a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a></h2>
@@ -597,17 +603,19 @@ H --- S
 <span id="cb3-8"><a href="#cb3-8"></a>compute <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
 <span id="cb3-9"><a href="#cb3-9"></a></span>
 <span id="cb3-10"><a href="#cb3-10"></a>  <span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb3-11"><a href="#cb3-11"></a></span>
-<span id="cb3-12"><a href="#cb3-12"></a>  <span class="co"># Our dataset</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a>  x <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(penguins[<span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>)])</span>
-<span id="cb3-14"><a href="#cb3-14"></a></span>
-<span id="cb3-15"><a href="#cb3-15"></a>  ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">344</span>, <span class="dv">344</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-16"><a href="#cb3-16"></a>  result1 <span class="ot">&lt;-</span></span>
-<span id="cb3-17"><a href="#cb3-17"></a>    <span class="fu">glm</span>(x[ind, <span class="dv">2</span>] <span class="sc">~</span> x[ind, <span class="dv">1</span>], <span class="at">family =</span> <span class="fu">binomial</span>(logit))</span>
-<span id="cb3-18"><a href="#cb3-18"></a>  <span class="fu">coefficients</span>(result1)</span>
-<span id="cb3-19"><a href="#cb3-19"></a>}</span>
-<span id="cb3-20"><a href="#cb3-20"></a></span>
-<span id="cb3-21"><a href="#cb3-21"></a>res <span class="ot">&lt;-</span> <span class="fu">Q</span>(compute, <span class="at">n =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>, <span class="at">n_jobs =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-11"><a href="#cb3-11"></a>  pid <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"PID: "</span>, <span class="fu">Sys.getpid</span>())</span>
+<span id="cb3-12"><a href="#cb3-12"></a>  host <span class="ot">&lt;-</span> <span class="fu">Sys.info</span>()[[<span class="st">"nodename"</span>]]</span>
+<span id="cb3-13"><a href="#cb3-13"></a>  <span class="co"># Our dataset</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a>  x <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(penguins[<span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>)])</span>
+<span id="cb3-15"><a href="#cb3-15"></a></span>
+<span id="cb3-16"><a href="#cb3-16"></a>  ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">344</span>, <span class="dv">344</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-17"><a href="#cb3-17"></a>  result1 <span class="ot">&lt;-</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a>    <span class="fu">glm</span>(x[ind, <span class="dv">2</span>] <span class="sc">~</span> x[ind, <span class="dv">1</span>], <span class="at">family =</span> <span class="fu">binomial</span>(logit))</span>
+<span id="cb3-19"><a href="#cb3-19"></a>  <span class="fu">list</span>(<span class="fu">coefficients</span>(result1), <span class="at">pid =</span> pid, <span class="at">hostname =</span> host)</span>
+<span id="cb3-20"><a href="#cb3-20"></a>}</span>
+<span id="cb3-21"><a href="#cb3-21"></a></span>
+<span id="cb3-22"><a href="#cb3-22"></a>res <span class="ot">&lt;-</span> <span class="fu">Q</span>(compute, <span class="at">n =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">n_jobs =</span> <span class="dv">1</span>)</span>
+<span id="cb3-23"><a href="#cb3-23"></a>res[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="crew.cluster" class="slide level2">
 <h2><a href="https://wlandau.github.io/crew.cluster/"><code>crew.cluster</code></a></h2>

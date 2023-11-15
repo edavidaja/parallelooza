@@ -38,15 +38,22 @@
     "objectID": "index.html#purrr",
     "href": "index.html#purrr",
     "title": "",
-    "section": "purrr",
-    "text": "purrr\n\npurrr::map(.x, .f, ...)\n\nfor every element of .x do .f"
+    "section": "purrr::",
+    "text": "purrr::\n\nmap(.x, .f, ... )\n\nfor every element of .x,\ndo .f"
   },
   {
     "objectID": "index.html#pfurrr",
     "href": "index.html#pfurrr",
     "title": "",
-    "section": "pfurrr",
-    "text": "pfurrr\n\npurrr::map(.x, .f, ...)\n\nfor every element of .x do .f,\naccording to the plan()"
+    "section": "pfurrr::",
+    "text": "pfurrr::\n\nfuture_map(.x, .f, ...)\n\nfor every element of .x,\ndo .f,\naccording to the plan()"
+  },
+  {
+    "objectID": "index.html#demo",
+    "href": "index.html#demo",
+    "title": "",
+    "section": "demo",
+    "text": "demo"
   },
   {
     "objectID": "index.html#scheduler",
@@ -74,14 +81,14 @@
     "href": "index.html#future.batchtools",
     "title": "",
     "section": "future.batchtools",
-    "text": "future.batchtools\nlibrary(future.batchtools)\nlibrary(furrr)\n\nplan(\n  list(\n    tweak(batchtools_slurm, resources = list(\"memory\" = 1024)),\n    multisession\n    )\n  )\n\ncompute &lt;- function(n) {\n\n  library(palmerpenguins)\n\n  # Our dataset\n  x &lt;- as.data.frame(penguins[c(4, 1)])\n\n  ind &lt;- sample(344, 344, replace = TRUE)\n  result1 &lt;-\n    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))\n  coefficients(result1)\n}\n\n\nfuture_map(rep(1, times = 2), ~ compute(.x))"
+    "text": "future.batchtools\nlibrary(future.batchtools)\nlibrary(furrr)\n\nplan(\n  list(\n    batchtools_slurm,\n    multisession\n    )\n  )\n\ncompute &lt;- function(n) {\n\n  library(palmerpenguins)\n  pid &lt;- paste0(\"PID: \", Sys.getpid())\n  host &lt;- Sys.info()[[\"nodename\"]]\n  # Our dataset\n  x &lt;- as.data.frame(penguins[c(4, 1)])\n\n  ind &lt;- sample(344, 344, replace = TRUE)\n  result1 &lt;-\n    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))\n  list(coefficients(result1), pid = pid, hostname = host)\n}\n\n\nfuture_map(rep(1, times = 3), ~ compute(.x))"
   },
   {
     "objectID": "index.html#clustermq",
     "href": "index.html#clustermq",
     "title": "",
     "section": "clustermq",
-    "text": "clustermq\noptions(\n  clustermq.scheduler = \"slurm\",\n  clustermq.template = \"clustermq.slurm.tmpl\"\n)\n\nlibrary(clustermq)\n\ncompute &lt;- function(n) {\n\n  library(palmerpenguins)\n\n  # Our dataset\n  x &lt;- as.data.frame(penguins[c(4, 1)])\n\n  ind &lt;- sample(344, 344, replace = TRUE)\n  result1 &lt;-\n    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))\n  coefficients(result1)\n}\n\nres &lt;- Q(compute, n = 1:1000, n_jobs = 1)"
+    "text": "clustermq\noptions(\n  clustermq.scheduler = \"slurm\",\n  clustermq.template = \"clustermq.slurm.tmpl\"\n)\n\nlibrary(clustermq)\n\ncompute &lt;- function(n) {\n\n  library(palmerpenguins)\n  pid &lt;- paste0(\"PID: \", Sys.getpid())\n  host &lt;- Sys.info()[[\"nodename\"]]\n  # Our dataset\n  x &lt;- as.data.frame(penguins[c(4, 1)])\n\n  ind &lt;- sample(344, 344, replace = TRUE)\n  result1 &lt;-\n    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))\n  list(coefficients(result1), pid = pid, hostname = host)\n}\n\nres &lt;- Q(compute, n = 1:5, n_jobs = 1)\nres[[1]]"
   },
   {
     "objectID": "index.html#crew.cluster",
