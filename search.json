@@ -1,5 +1,19 @@
 [
   {
+    "objectID": "ERRATA.html",
+    "href": "ERRATA.html",
+    "title": "Errata",
+    "section": "",
+    "text": "While presenting at the Research Computing Series for Syracuse University, I illustrated using clustermq for parallelizing jobs but did not correctly demonstrate getting the jobs to run across multiple nodes. The jobs argument to Q() must be set to more than 1."
+  },
+  {
+    "objectID": "ERRATA.html#section",
+    "href": "ERRATA.html#section",
+    "title": "Errata",
+    "section": "",
+    "text": "While presenting at the Research Computing Series for Syracuse University, I illustrated using clustermq for parallelizing jobs but did not correctly demonstrate getting the jobs to run across multiple nodes. The jobs argument to Q() must be set to more than 1."
+  },
+  {
     "objectID": "index.html#about-me",
     "href": "index.html#about-me",
     "title": "",
@@ -11,7 +25,7 @@
     "href": "index.html#this-talk-is-a-map",
     "title": "",
     "section": "this talk is a map",
-    "text": "this talk is a map\n\nslides, example code github.com/edavidaja/parallelooza\nHPC + cloud development environnments aws parallelcluster + posit workbench"
+    "text": "this talk is a map\n\nslides github.com/edavidaja/parallelooza\nexample code github.com/edavidaja/iggi\nHPC + cloud development environnments aws parallelcluster + posit workbench"
   },
   {
     "objectID": "index.html#how-to-accelerate-code",
@@ -39,28 +53,28 @@
     "href": "index.html#purrr",
     "title": "",
     "section": "purrr::",
-    "text": "purrr::\n\nmap(.x, .f, ... )\n\nfor every element of .x,\ndo .f"
+    "text": "purrr::\n\nmap(.x, .f, ...) \n\nfor every element of .x,\ndo .f"
   },
   {
     "objectID": "index.html#pfurrr",
     "href": "index.html#pfurrr",
     "title": "",
     "section": "pfurrr::",
-    "text": "pfurrr::\n\nfuture_map(.x, .f, ...)\n\nfor every element of .x,\ndo .f,\naccording to the plan()"
+    "text": "pfurrr::\n\nfuture_map(.x, .f, …)\n\nfor every element of .x,\ndo .f,\naccording to the plan()"
   },
   {
     "objectID": "index.html#demo",
     "href": "index.html#demo",
     "title": "",
     "section": "demo",
-    "text": "demo"
+    "text": "demo\n\nparse_pdf.R"
   },
   {
     "objectID": "index.html#scheduler",
     "href": "index.html#scheduler",
     "title": "",
     "section": "“scheduler”:",
-    "text": "“scheduler”:\nsoftware that matches tasks to available resources:\n\n\norchestrators\n\nkubernetes\nnomad\n\n(not a scheduler)\n\napache spark\n\n\nhpc\n\nslurm 🍊\ncondor 🍊\npbs\ngrid engine"
+    "text": "“scheduler”:\nsoftware that matches tasks to available resources:\n\n\norchestrators\n\nkubernetes\nnomad\n\n(not a scheduler)\n\napache spark\n\n\nhpc\n\nslurm\nlsf\npbs\ngrid engine"
   },
   {
     "objectID": "index.html#hpc-1",
@@ -81,21 +95,21 @@
     "href": "index.html#future.batchtools",
     "title": "",
     "section": "future.batchtools",
-    "text": "future.batchtools\nlibrary(future.batchtools)\nlibrary(furrr)\n\nplan(\n  list(\n    batchtools_slurm,\n    multisession\n    )\n  )\n\ncompute &lt;- function(n) {\n\n  library(palmerpenguins)\n  pid &lt;- paste0(\"PID: \", Sys.getpid())\n  host &lt;- Sys.info()[[\"nodename\"]]\n  # Our dataset\n  x &lt;- as.data.frame(penguins[c(4, 1)])\n\n  ind &lt;- sample(344, 344, replace = TRUE)\n  result1 &lt;-\n    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))\n  list(coefficients(result1), pid = pid, hostname = host)\n}\n\n\nfuture_map(rep(1, times = 3), ~ compute(.x))"
+    "text": "future.batchtools\nlibrary(future.batchtools)\nlibrary(furrr)\n\nplan(\n  list(\n    batchtools_slurm,\n    multisession\n    )\n  )\n\ntargets %$%\n  future_map2(report, files, ~ iggi::parse_pdf(.x, .y))"
   },
   {
     "objectID": "index.html#clustermq",
     "href": "index.html#clustermq",
     "title": "",
     "section": "clustermq",
-    "text": "clustermq\noptions(\n  clustermq.scheduler = \"slurm\",\n  clustermq.template = \"clustermq.slurm.tmpl\"\n)\n\nlibrary(clustermq)\n\ncompute &lt;- function(n) {\n\n  library(palmerpenguins)\n  pid &lt;- paste0(\"PID: \", Sys.getpid())\n  host &lt;- Sys.info()[[\"nodename\"]]\n  # Our dataset\n  x &lt;- as.data.frame(penguins[c(4, 1)])\n\n  ind &lt;- sample(344, 344, replace = TRUE)\n  result1 &lt;-\n    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))\n  list(coefficients(result1), pid = pid, hostname = host)\n}\n\nres &lt;- Q(compute, n = 1:5, n_jobs = 1)\nres[[1]]"
+    "text": "clustermq\noptions(\n  clustermq.scheduler = \"slurm\",\n  clustermq.template = here::here(\"inst\", \"clustermq.slurm.tmpl\")\n)\n\nlibrary(clustermq)\nlibrary(iggi)\n\nres &lt;- Q(\n  iggi::parse_pdf, \n  report_id = targets$report, file = targets$files, \n  n_jobs = 2,\n  pkgs = c(\"magrittr\", \"pdftools\", \"tesseract\", \"purrr\", \"dplyr\", \"stringr\", \"iggi\")\n  )"
   },
   {
     "objectID": "index.html#crew.cluster",
     "href": "index.html#crew.cluster",
     "title": "",
     "section": "crew.cluster",
-    "text": "crew.cluster\nlibrary(crew.cluster)\n\ncontroller &lt;- crew_controller_slurm(\n  host = Sys.info()[\"nodename\"],\n  name = \"crew\",\n  workers = 2,\n  slurm_cpus_per_task = 1,\n  slurm_memory_gigabytes_per_cpu = 1024\n  )\n\ncompute &lt;- function(n) {\n\n  library(palmerpenguins)\n\n  # Our dataset\n  x &lt;- as.data.frame(penguins[c(4, 1)])\n\n  ind &lt;- sample(344, 344, replace = TRUE)\n  result1 &lt;-\n    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))\n  coefficients(result1)\n}\n\ncontroller$start()\ncontroller$push(name = \"fit model\", command = compute())\ncontroller$pop()\ncontroller$terminate()"
+    "text": "crew.cluster\nlibrary(crew.cluster)\ncontroller &lt;- crew_controller_slurm(\n  name = \"parse_pdf\",\n  workers = 3L,\n  seconds_idle = 300,\n  slurm_memory_gigabytes_per_cpu = 1,\n  script_lines = paste0(\"export PATH=\",Sys.getenv(\"R_HOME\"),\"/bin:$PATH\"),\n  verbose = TRUE\n)\n\ncontroller$start()\n\nresults &lt;- controller$map(\n  command = iggi::parse_pdf(.x, .y),\n  iterate = list(\n    .x = targets$report,\n    .y = targets$files\n  ),\n  verbose = TRUE\n)\n\nfinaldata &lt;- results$result\n\ncontroller$terminate()"
   },
   {
     "objectID": "index.html#dask-jobqueue",

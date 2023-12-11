@@ -8,7 +8,7 @@
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.424">
+  <meta name="generator" content="quarto-1.4.514">
 
   <title>index</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -409,7 +409,8 @@
 <section id="this-talk-is-a-map" class="slide level2">
 <h2>this talk is a map</h2>
 <ul>
-<li>slides, example code <a href="https://github.com/edavidaja/parallelooza">github.com/edavidaja/parallelooza</a></li>
+<li>slides <a href="https://github.com/edavidaja/parallelooza">github.com/edavidaja/parallelooza</a></li>
+<li>example code <a href="https://github.com/edavidaja/iggi/tree/parallelooza">github.com/edavidaja/iggi</a></li>
 <li>HPC + cloud development environnments <a href="https://github.com/sol-eng/aws-parallelcluster-rsw">aws parallelcluster + posit workbench</a></li>
 </ul>
 </section>
@@ -462,7 +463,7 @@
 <section id="purrr" class="slide level2">
 <h2><a href="https://rstats-wtf.github.io/wtf-purrr-slides/"><code>purrr::</code></a></h2>
 <div class="r-fit-text">
-<p><code>map(.x, .f, ... )</code></p>
+<pre><code>map(.x, .f, ...) </code></pre>
 </div>
 <p>for every element of <code>.x</code>,<br>
 do <code>.f</code></p>
@@ -470,7 +471,7 @@ do <code>.f</code></p>
 <section id="pfurrr" class="slide level2">
 <h2><a href="https://furrr.futureverse.org/"><del>p</del><code>furrr::</code></a></h2>
 <div class="r-fit-text">
-<p><code>future_map(.x, .f, ...)</code></p>
+<p>future_map(.x, .f, …)</p>
 </div>
 <p>for every element of <code>.x</code>,<br>
 do <code>.f</code>,<br>
@@ -478,6 +479,9 @@ according to the <code>plan()</code></p>
 </section>
 <section id="demo" class="slide level2">
 <h2>demo</h2>
+<ul>
+<li><a href="https://github.com/edavidaja/iggi/blob/parallelooza/R/parse-pdf.R">parse_pdf.R</a></li>
+</ul>
 </section></section>
 <section>
 <section id="add-machines" class="title-slide slide level1 center" data-background-color="white">
@@ -486,7 +490,7 @@ according to the <code>plan()</code></p>
 <div class="column">
 <p><img data-src="https://slurm.schedmd.com/slurm_logo.png"></p>
 </div><div class="column">
-<p><img data-src="https://kubernetes.io/images/nav_logo2.svg"> <img data-src="https://htcondor.org/logos/htcondor_logos/PNG/HTCondor_red_blk_notag.png"></p>
+<p><img data-src="https://kubernetes.io/images/nav_logo2.svg"></p>
 </div>
 </div>
 </section>
@@ -507,8 +511,8 @@ according to the <code>plan()</code></p>
 </div><div class="column">
 <h3 id="hpc">hpc</h3>
 <ul>
-<li>slurm 🍊</li>
-<li>condor 🍊</li>
+<li>slurm</li>
+<li>lsf</li>
 <li>pbs</li>
 <li>grid engine</li>
 </ul>
@@ -547,105 +551,79 @@ H --- S
 </section>
 <section id="templates" class="slide level2">
 <h2>templates</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">#!/bin/bash -l</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># File: slurm.tmpl</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Template for using clustermq against a SLURM backend</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#SBATCH --job-name={{ job_name }}</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#SBATCH --error={{ log_file | /dev/null }}</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co">#SBATCH --mem-per-cpu={{ memory | 1024 }}</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#SBATCH --array=1-{{ n_jobs }}</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#SBATCH --cpus-per-task={{ cores | 1 }}</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a></span>
-<span id="cb1-12"><a href="#cb1-12"></a></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="bu">export</span> <span class="va">OMP_NUM_THREADS</span><span class="op">=</span>{{ <span class="va">cores</span> <span class="kw">|</span> <span class="ex">1</span> }}</span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="va">CMQ_AUTH</span><span class="op">=</span>{{ <span class="ex">auth</span> }} <span class="va">${R_HOME}</span>/bin/R <span class="at">--no-save</span> <span class="at">--no-restore</span> <span class="at">-e</span> <span class="st">'clustermq:::worker("{{ master }}")'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">#!/bin/bash -l</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># File: slurm.tmpl</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># Template for using clustermq against a SLURM backend</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#SBATCH --job-name={{ job_name }}</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#SBATCH --error={{ log_file | /dev/null }}</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#SBATCH --mem-per-cpu={{ memory | 1024 }}</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#SBATCH --array=1-{{ n_jobs }}</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#SBATCH --cpus-per-task={{ cores | 1 }}</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a></span>
+<span id="cb2-12"><a href="#cb2-12"></a></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="bu">export</span> <span class="va">OMP_NUM_THREADS</span><span class="op">=</span>{{ <span class="va">cores</span> <span class="kw">|</span> <span class="ex">1</span> }}</span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="va">CMQ_AUTH</span><span class="op">=</span>{{ <span class="ex">auth</span> }} <span class="va">${R_HOME}</span>/bin/R <span class="at">--no-save</span> <span class="at">--no-restore</span> <span class="at">-e</span> <span class="st">'clustermq:::worker("{{ master }}")'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="future.batchtools" class="slide level2">
 <h2><a href="https://future.batchtools.futureverse.org/index.html"><code>future.batchtools</code></a></h2>
-<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">library</span>(future.batchtools)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">library</span>(furrr)</span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="fu">plan</span>(</span>
-<span id="cb2-5"><a href="#cb2-5"></a>  <span class="fu">list</span>(</span>
-<span id="cb2-6"><a href="#cb2-6"></a>    batchtools_slurm,</span>
-<span id="cb2-7"><a href="#cb2-7"></a>    multisession</span>
-<span id="cb2-8"><a href="#cb2-8"></a>    )</span>
-<span id="cb2-9"><a href="#cb2-9"></a>  )</span>
-<span id="cb2-10"><a href="#cb2-10"></a></span>
-<span id="cb2-11"><a href="#cb2-11"></a>compute <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
-<span id="cb2-12"><a href="#cb2-12"></a></span>
-<span id="cb2-13"><a href="#cb2-13"></a>  <span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb2-14"><a href="#cb2-14"></a>  pid <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"PID: "</span>, <span class="fu">Sys.getpid</span>())</span>
-<span id="cb2-15"><a href="#cb2-15"></a>  host <span class="ot">&lt;-</span> <span class="fu">Sys.info</span>()[[<span class="st">"nodename"</span>]]</span>
-<span id="cb2-16"><a href="#cb2-16"></a>  <span class="co"># Our dataset</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a>  x <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(penguins[<span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>)])</span>
-<span id="cb2-18"><a href="#cb2-18"></a></span>
-<span id="cb2-19"><a href="#cb2-19"></a>  ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">344</span>, <span class="dv">344</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-20"><a href="#cb2-20"></a>  result1 <span class="ot">&lt;-</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a>    <span class="fu">glm</span>(x[ind, <span class="dv">2</span>] <span class="sc">~</span> x[ind, <span class="dv">1</span>], <span class="at">family =</span> <span class="fu">binomial</span>(logit))</span>
-<span id="cb2-22"><a href="#cb2-22"></a>  <span class="fu">list</span>(<span class="fu">coefficients</span>(result1), <span class="at">pid =</span> pid, <span class="at">hostname =</span> host)</span>
-<span id="cb2-23"><a href="#cb2-23"></a>}</span>
-<span id="cb2-24"><a href="#cb2-24"></a></span>
-<span id="cb2-25"><a href="#cb2-25"></a></span>
-<span id="cb2-26"><a href="#cb2-26"></a><span class="fu">future_map</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="at">times =</span> <span class="dv">3</span>), <span class="sc">~</span> <span class="fu">compute</span>(.x))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3" data-startfrom="9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r" style="counter-reset: source-line 8;"><span id="cb3-9"><a href="#cb3-9"></a><span class="fu">library</span>(future.batchtools)</span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="fu">library</span>(furrr)</span>
+<span id="cb3-11"><a href="#cb3-11"></a></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="fu">plan</span>(</span>
+<span id="cb3-13"><a href="#cb3-13"></a>  <span class="fu">list</span>(</span>
+<span id="cb3-14"><a href="#cb3-14"></a>    batchtools_slurm,</span>
+<span id="cb3-15"><a href="#cb3-15"></a>    multisession</span>
+<span id="cb3-16"><a href="#cb3-16"></a>    )</span>
+<span id="cb3-17"><a href="#cb3-17"></a>  )</span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a>targets <span class="sc">%$%</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a>  <span class="fu">future_map2</span>(report, files, <span class="sc">~</span> iggi<span class="sc">::</span><span class="fu">parse_pdf</span>(.x, .y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="clustermq" class="slide level2">
 <h2><a href="https://mschubert.github.io/clustermq/"><code>clustermq</code></a></h2>
-<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">options</span>(</span>
-<span id="cb3-2"><a href="#cb3-2"></a>  <span class="at">clustermq.scheduler =</span> <span class="st">"slurm"</span>,</span>
-<span id="cb3-3"><a href="#cb3-3"></a>  <span class="at">clustermq.template =</span> <span class="st">"clustermq.slurm.tmpl"</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a>)</span>
-<span id="cb3-5"><a href="#cb3-5"></a></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="fu">library</span>(clustermq)</span>
-<span id="cb3-7"><a href="#cb3-7"></a></span>
-<span id="cb3-8"><a href="#cb3-8"></a>compute <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
-<span id="cb3-9"><a href="#cb3-9"></a></span>
-<span id="cb3-10"><a href="#cb3-10"></a>  <span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb3-11"><a href="#cb3-11"></a>  pid <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"PID: "</span>, <span class="fu">Sys.getpid</span>())</span>
-<span id="cb3-12"><a href="#cb3-12"></a>  host <span class="ot">&lt;-</span> <span class="fu">Sys.info</span>()[[<span class="st">"nodename"</span>]]</span>
-<span id="cb3-13"><a href="#cb3-13"></a>  <span class="co"># Our dataset</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a>  x <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(penguins[<span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>)])</span>
-<span id="cb3-15"><a href="#cb3-15"></a></span>
-<span id="cb3-16"><a href="#cb3-16"></a>  ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">344</span>, <span class="dv">344</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-17"><a href="#cb3-17"></a>  result1 <span class="ot">&lt;-</span></span>
-<span id="cb3-18"><a href="#cb3-18"></a>    <span class="fu">glm</span>(x[ind, <span class="dv">2</span>] <span class="sc">~</span> x[ind, <span class="dv">1</span>], <span class="at">family =</span> <span class="fu">binomial</span>(logit))</span>
-<span id="cb3-19"><a href="#cb3-19"></a>  <span class="fu">list</span>(<span class="fu">coefficients</span>(result1), <span class="at">pid =</span> pid, <span class="at">hostname =</span> host)</span>
-<span id="cb3-20"><a href="#cb3-20"></a>}</span>
-<span id="cb3-21"><a href="#cb3-21"></a></span>
-<span id="cb3-22"><a href="#cb3-22"></a>res <span class="ot">&lt;-</span> <span class="fu">Q</span>(compute, <span class="at">n =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">n_jobs =</span> <span class="dv">1</span>)</span>
-<span id="cb3-23"><a href="#cb3-23"></a>res[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4" data-startfrom="10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r" style="counter-reset: source-line 9;"><span id="cb4-10"><a href="#cb4-10"></a><span class="fu">options</span>(</span>
+<span id="cb4-11"><a href="#cb4-11"></a>  <span class="at">clustermq.scheduler =</span> <span class="st">"slurm"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12"></a>  <span class="at">clustermq.template =</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"inst"</span>, <span class="st">"clustermq.slurm.tmpl"</span>)</span>
+<span id="cb4-13"><a href="#cb4-13"></a>)</span>
+<span id="cb4-14"><a href="#cb4-14"></a></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="fu">library</span>(clustermq)</span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="fu">library</span>(iggi)</span>
+<span id="cb4-17"><a href="#cb4-17"></a></span>
+<span id="cb4-18"><a href="#cb4-18"></a>res <span class="ot">&lt;-</span> <span class="fu">Q</span>(</span>
+<span id="cb4-19"><a href="#cb4-19"></a>  iggi<span class="sc">::</span>parse_pdf, </span>
+<span id="cb4-20"><a href="#cb4-20"></a>  <span class="at">report_id =</span> targets<span class="sc">$</span>report, <span class="at">file =</span> targets<span class="sc">$</span>files, </span>
+<span id="cb4-21"><a href="#cb4-21"></a>  <span class="at">n_jobs =</span> <span class="dv">2</span>,</span>
+<span id="cb4-22"><a href="#cb4-22"></a>  <span class="at">pkgs =</span> <span class="fu">c</span>(<span class="st">"magrittr"</span>, <span class="st">"pdftools"</span>, <span class="st">"tesseract"</span>, <span class="st">"purrr"</span>, <span class="st">"dplyr"</span>, <span class="st">"stringr"</span>, <span class="st">"iggi"</span>)</span>
+<span id="cb4-23"><a href="#cb4-23"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="crew.cluster" class="slide level2">
 <h2><a href="https://wlandau.github.io/crew.cluster/"><code>crew.cluster</code></a></h2>
-<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">library</span>(crew.cluster)</span>
-<span id="cb4-2"><a href="#cb4-2"></a></span>
-<span id="cb4-3"><a href="#cb4-3"></a>controller <span class="ot">&lt;-</span> <span class="fu">crew_controller_slurm</span>(</span>
-<span id="cb4-4"><a href="#cb4-4"></a>  <span class="at">host =</span> <span class="fu">Sys.info</span>()[<span class="st">"nodename"</span>],</span>
-<span id="cb4-5"><a href="#cb4-5"></a>  <span class="at">name =</span> <span class="st">"crew"</span>,</span>
-<span id="cb4-6"><a href="#cb4-6"></a>  <span class="at">workers =</span> <span class="dv">2</span>,</span>
-<span id="cb4-7"><a href="#cb4-7"></a>  <span class="at">slurm_cpus_per_task =</span> <span class="dv">1</span>,</span>
-<span id="cb4-8"><a href="#cb4-8"></a>  <span class="at">slurm_memory_gigabytes_per_cpu =</span> <span class="dv">1024</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a>  )</span>
-<span id="cb4-10"><a href="#cb4-10"></a></span>
-<span id="cb4-11"><a href="#cb4-11"></a>compute <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
-<span id="cb4-12"><a href="#cb4-12"></a></span>
-<span id="cb4-13"><a href="#cb4-13"></a>  <span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb4-14"><a href="#cb4-14"></a></span>
-<span id="cb4-15"><a href="#cb4-15"></a>  <span class="co"># Our dataset</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a>  x <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(penguins[<span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>)])</span>
-<span id="cb4-17"><a href="#cb4-17"></a></span>
-<span id="cb4-18"><a href="#cb4-18"></a>  ind <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">344</span>, <span class="dv">344</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-19"><a href="#cb4-19"></a>  result1 <span class="ot">&lt;-</span></span>
-<span id="cb4-20"><a href="#cb4-20"></a>    <span class="fu">glm</span>(x[ind, <span class="dv">2</span>] <span class="sc">~</span> x[ind, <span class="dv">1</span>], <span class="at">family =</span> <span class="fu">binomial</span>(logit))</span>
-<span id="cb4-21"><a href="#cb4-21"></a>  <span class="fu">coefficients</span>(result1)</span>
-<span id="cb4-22"><a href="#cb4-22"></a>}</span>
-<span id="cb4-23"><a href="#cb4-23"></a></span>
-<span id="cb4-24"><a href="#cb4-24"></a>controller<span class="sc">$</span><span class="fu">start</span>()</span>
-<span id="cb4-25"><a href="#cb4-25"></a>controller<span class="sc">$</span><span class="fu">push</span>(<span class="at">name =</span> <span class="st">"fit model"</span>, <span class="at">command =</span> <span class="fu">compute</span>())</span>
-<span id="cb4-26"><a href="#cb4-26"></a>controller<span class="sc">$</span><span class="fu">pop</span>()</span>
-<span id="cb4-27"><a href="#cb4-27"></a>controller<span class="sc">$</span><span class="fu">terminate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5" data-startfrom="9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r" style="counter-reset: source-line 8;"><span id="cb5-9"><a href="#cb5-9"></a><span class="fu">library</span>(crew.cluster)</span>
+<span id="cb5-10"><a href="#cb5-10"></a>controller <span class="ot">&lt;-</span> <span class="fu">crew_controller_slurm</span>(</span>
+<span id="cb5-11"><a href="#cb5-11"></a>  <span class="at">name =</span> <span class="st">"parse_pdf"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12"></a>  <span class="at">workers =</span> <span class="dv">3</span>L,</span>
+<span id="cb5-13"><a href="#cb5-13"></a>  <span class="at">seconds_idle =</span> <span class="dv">300</span>,</span>
+<span id="cb5-14"><a href="#cb5-14"></a>  <span class="at">slurm_memory_gigabytes_per_cpu =</span> <span class="dv">1</span>,</span>
+<span id="cb5-15"><a href="#cb5-15"></a>  <span class="at">script_lines =</span> <span class="fu">paste0</span>(<span class="st">"export PATH="</span>,<span class="fu">Sys.getenv</span>(<span class="st">"R_HOME"</span>),<span class="st">"/bin:$PATH"</span>),</span>
+<span id="cb5-16"><a href="#cb5-16"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a>)</span>
+<span id="cb5-18"><a href="#cb5-18"></a></span>
+<span id="cb5-19"><a href="#cb5-19"></a>controller<span class="sc">$</span><span class="fu">start</span>()</span>
+<span id="cb5-20"><a href="#cb5-20"></a></span>
+<span id="cb5-21"><a href="#cb5-21"></a>results <span class="ot">&lt;-</span> controller<span class="sc">$</span><span class="fu">map</span>(</span>
+<span id="cb5-22"><a href="#cb5-22"></a>  <span class="at">command =</span> iggi<span class="sc">::</span><span class="fu">parse_pdf</span>(.x, .y),</span>
+<span id="cb5-23"><a href="#cb5-23"></a>  <span class="at">iterate =</span> <span class="fu">list</span>(</span>
+<span id="cb5-24"><a href="#cb5-24"></a>    <span class="at">.x =</span> targets<span class="sc">$</span>report,</span>
+<span id="cb5-25"><a href="#cb5-25"></a>    <span class="at">.y =</span> targets<span class="sc">$</span>files</span>
+<span id="cb5-26"><a href="#cb5-26"></a>  ),</span>
+<span id="cb5-27"><a href="#cb5-27"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-28"><a href="#cb5-28"></a>)</span>
+<span id="cb5-29"><a href="#cb5-29"></a></span>
+<span id="cb5-30"><a href="#cb5-30"></a>finaldata <span class="ot">&lt;-</span> results<span class="sc">$</span>result</span>
+<span id="cb5-31"><a href="#cb5-31"></a></span>
+<span id="cb5-32"><a href="#cb5-32"></a>controller<span class="sc">$</span><span class="fu">terminate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section></section>
 <section>
 <section id="python" class="title-slide slide level1 center">
