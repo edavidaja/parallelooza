@@ -16,7 +16,8 @@ a survey of parallel computing approaches
 
 ## this talk is a map
 
-- slides, example code [github.com/edavidaja/parallelooza](https://github.com/edavidaja/parallelooza)
+- slides [github.com/edavidaja/parallelooza](https://github.com/edavidaja/parallelooza)
+- example code [github.com/edavidaja/iggi](https://github.com/edavidaja/iggi/tree/parallelooza)
 - HPC + cloud development environnments [aws parallelcluster + posit workbench](https://github.com/sol-eng/aws-parallelcluster-rsw)
 
 ## how to accelerate code
@@ -63,7 +64,7 @@ a survey of parallel computing approaches
 ## [`purrr::`](https://rstats-wtf.github.io/wtf-purrr-slides/) 
 
 ::: r-fit-text
-`map(.x, .f, ... )`
+    map(.x, .f, ...) 
 :::
 
 for every element of `.x`,  
@@ -73,7 +74,7 @@ do `.f`
 ## [~~p~~`furrr::`](https://furrr.futureverse.org/)
 
 ::: r-fit-text
-`future_map(.x, .f, ...)`
+  future_map(.x, .f, ...)
 :::
 
 for every element of `.x`,  
@@ -81,6 +82,7 @@ do `.f`,
 according to the `plan()`
 
 ## demo
+- [parse_pdf.R](https://github.com/edavidaja/iggi/blob/parallelooza/R/parse-pdf.R)
 
 # add machines {background-color="white"}
 
@@ -91,7 +93,7 @@ according to the `plan()`
 :::
 ::: {.column}
 ![](https://kubernetes.io/images/nav_logo2.svg)
-![](https://htcondor.org/logos/htcondor_logos/PNG/HTCondor_red_blk_notag.png)
+
 :::
 :::
 
@@ -119,8 +121,8 @@ software that matches tasks to available resources:
 
 ### hpc
 
-- slurm 🍊
-- condor 🍊
+- slurm
+- lsf
 - pbs
 - grid engine
 
@@ -158,17 +160,17 @@ H --- S
 
 ## [`future.batchtools`](https://future.batchtools.futureverse.org/index.html)
 
-```{.r include="R/future.batchtools.R"}
+```{.r include="R/future.batchtools.R" start-line=9}
 ```
 
 ## [`clustermq`](https://mschubert.github.io/clustermq/)
 
-```{.r include="R/clustermq.R"}
+```{.r include="R/clustermq.R" start-line=10}
 ```
 
 ## [`crew.cluster`](https://wlandau.github.io/crew.cluster/)
 
-```{.r include="R/crew.cluster.R"}
+```{.r include="R/crew.cluster.R" start-line=9}
 ```
 
 # python

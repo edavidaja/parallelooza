@@ -1,3 +1,11 @@
+library(dplyr)
+library(magrittr)
+
+targets <- readr::read_csv(here::here("inst", "metadata.csv")) %>% 
+  filter(lubridate::year(published) == 2017, !is.na(target)) %>%
+  mutate(files = here::here("pdfs/", basename(target))) %>% 
+  sample_n(5)
+
 library(future.batchtools)
 library(furrr)
 
@@ -8,19 +16,5 @@ plan(
     )
   )
 
-compute <- function(n) {
-
-  library(palmerpenguins)
-  pid <- paste0("PID: ", Sys.getpid())
-  host <- Sys.info()[["nodename"]]
-  # Our dataset
-  x <- as.data.frame(penguins[c(4, 1)])
-
-  ind <- sample(344, 344, replace = TRUE)
-  result1 <-
-    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))
-  list(coefficients(result1), pid = pid, hostname = host)
-}
-
-
-future_map(rep(1, times = 3), ~ compute(.x))
+targets %$%
+  future_map2(report, files, ~ iggi::parse_pdf(.x, .y))

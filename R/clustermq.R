@@ -1,23 +1,23 @@
+library(dplyr)
+library(magrittr)
+
+targets <- readr::read_csv(here::here("inst", "metadata.csv")) %>% 
+  filter(lubridate::year(published) == 2017, !is.na(target)) %>%
+  mutate(files = here::here("pdfs/", basename(target))) %>% 
+  sample_n(5)
+
+
 options(
   clustermq.scheduler = "slurm",
-  clustermq.template = "clustermq.slurm.tmpl"
+  clustermq.template = here::here("inst", "clustermq.slurm.tmpl")
 )
 
 library(clustermq)
+library(iggi)
 
-compute <- function(n) {
-
-  library(palmerpenguins)
-  pid <- paste0("PID: ", Sys.getpid())
-  host <- Sys.info()[["nodename"]]
-  # Our dataset
-  x <- as.data.frame(penguins[c(4, 1)])
-
-  ind <- sample(344, 344, replace = TRUE)
-  result1 <-
-    glm(x[ind, 2] ~ x[ind, 1], family = binomial(logit))
-  list(coefficients(result1), pid = pid, hostname = host)
-}
-
-res <- Q(compute, n = 1:5, n_jobs = 1)
-res[[1]]
+res <- Q(
+  iggi::parse_pdf, 
+  report_id = targets$report, file = targets$files, 
+  n_jobs = 2,
+  pkgs = c("magrittr", "pdftools", "tesseract", "purrr", "dplyr", "stringr", "iggi")
+  )
